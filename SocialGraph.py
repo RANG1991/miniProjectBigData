@@ -10,21 +10,28 @@ class SocialGraph:
         self._connections_by_ids = {}
         self._users_by_ids = {}
         vertices_reader = csv.reader(open(vertices_file, "r"), delimiter=',', quotechar='"')
+        next(vertices_reader, None)
         edges_reader = csv.reader(open(edges_file, "r"), delimiter=",", quotechar='"')
+        next(edges_reader, None)
         for row in vertices_reader:
             if row:
-                print(row)
                 user_id = row[0]
-                user = User(user_id, int(row[1]), int(row[2]), int(row[3]))
+                user = User(user_id, int(row[1]), int(row[2]), float(row[3]))
                 self._graph[user_id] = []
                 self._users_by_ids[user_id] = user
-        for row in edges_reader[1:]:
+        for row in edges_reader:
             if row:
                 users_ids = tuple(row[1].split(":"))
-                connection = Connection(row[0], row[2], row[3], row[4], row[5], tuple())
+                connection = Connection(row[0], int(row[2]), int(row[3]), float(row[4]), int(row[5]), users_ids)
                 self._connections_by_ids[users_ids] = connection
                 self._graph[users_ids[0]].append(users_ids[1])
                 self._graph[users_ids[1]].append(users_ids[0])
+
+    def get_dict_graph(self):
+        return self._graph
+
+    def get_connections(self):
+        return self._connections_by_ids
 
     def find_all_paths(self, start, end, path=[]):
         path = path + [start]

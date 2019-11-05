@@ -19,7 +19,7 @@
     }
   },
   "connections": {
-    "number": 3000,
+    "number": 100,
     "params": {
       "MF": {
         "min": 0,
