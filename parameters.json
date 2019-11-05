@@ -1,0 +1,45 @@
+{
+  "users" : {
+    "number": 100,
+    "params": {
+      "TF": {
+        "min": 0,
+        "max": 1000,
+        "step": 1
+      },
+      "AUA": {
+        "min": 1,
+        "max": 3650,
+        "step": 1
+      },
+      "FFR": {
+        "min": 0,
+        "max": 3
+      }
+    }
+  },
+  "connections": {
+    "number": 3000,
+    "params": {
+      "MF": {
+        "min": 0,
+        "max": 1000,
+        "step": 1
+      },
+      "FD": {
+        "min": 1,
+        "max": 3650,
+        "step": 1
+      },
+      "RA": {
+        "min": 0,
+        "max": 10,
+        "step": 1
+      },
+      "OIR": {
+        "min": 0,
+        "max": 3
+      }
+    }
+  }
+}
