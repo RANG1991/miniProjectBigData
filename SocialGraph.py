@@ -23,7 +23,7 @@ class SocialGraph:
         for row in edges_reader:
             if row:
                 users_ids = tuple(row[1].split(":"))
-                connection = Connection(row[0], int(row[2]), int(row[3]), float(row[4]), int(row[5]), users_ids)
+                connection = Connection(row[0], int(row[2]), int(row[3]), float(row[4]), float(row[5]), users_ids)
                 self._connections_by_ids[users_ids] = connection
                 self._graph[users_ids[0]].append(users_ids[1])
 
@@ -32,6 +32,9 @@ class SocialGraph:
 
     def get_connections(self):
         return self._connections_by_ids
+
+    def get_users(self):
+        return self._users_by_ids
 
     def find_all_paths(self, start, end, path=[]):
         path = path + [start]

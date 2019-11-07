@@ -5,19 +5,21 @@ class User:
         self._TF = TF
         self._AUA = AUA
         self._FFR = FFR
-        self._connections = []
-
-    def add_connection(self, connection):
-        self._connections.append(connection)
-
-    def get_connections(self):
-        return self._connections
+        self._prob = self.calc_prob()
 
     def get_id(self):
         return self._id
 
+    def get_prob(self):
+        return self._prob
+
     def __repr__(self):
         res = "id: {}, TF: {}, AUA: {}, FFR: {}".format(self._id, self._TF, self._AUA, self._FFR)
-        for connection in self._connections:
-            res += "\n" + connection.__repr__
         return res
+
+    def calc_prob(self):
+        tf = 1 if self._TF >= 100 else (self._TF / 100)
+        aua = 1 if self._AUA >= 365 else (self._AUA / 365)
+        ffr = 1 if self._FFR >= 1 else self._FFR
+        return (tf + aua + ffr) / 3
+
