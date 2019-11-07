@@ -1,6 +1,7 @@
 import csv
 from User import User
 from Connection import Connection
+import networkx as nx
 
 
 class SocialGraph:
@@ -25,7 +26,6 @@ class SocialGraph:
                 connection = Connection(row[0], int(row[2]), int(row[3]), float(row[4]), int(row[5]), users_ids)
                 self._connections_by_ids[users_ids] = connection
                 self._graph[users_ids[0]].append(users_ids[1])
-                self._graph[users_ids[1]].append(users_ids[0])
 
     def get_dict_graph(self):
         return self._graph
