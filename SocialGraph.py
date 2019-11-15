@@ -26,6 +26,8 @@ class SocialGraph:
                 connection = Connection(row[0], int(row[2]), int(row[3]), float(row[4]), float(row[5]), users_ids)
                 self._connections_by_ids[users_ids] = connection
                 self._graph[users_ids[0]].append(users_ids[1])
+        g = nx.DiGraph(self._graph)
+        nx.draw_networkx(g, arrows=True)
 
     def get_dict_graph(self):
         return self._graph
