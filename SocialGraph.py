@@ -2,6 +2,7 @@ import csv
 from User import User
 from Connection import Connection
 import networkx as nx
+import matplotlib.pyplot as plt
 
 
 class SocialGraph:
@@ -28,6 +29,7 @@ class SocialGraph:
                 self._graph[users_ids[0]].append(users_ids[1])
         g = nx.DiGraph(self._graph)
         nx.draw_networkx(g, arrows=True)
+        plt.show()
 
     def get_dict_graph(self):
         return self._graph
