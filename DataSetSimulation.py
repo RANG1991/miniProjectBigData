@@ -59,7 +59,7 @@ class DataSetSimulation:
             seen.add((x, y))
             yield (x, y)
             x, y = choice(self._users_ids), choice(self._users_ids)
-            while (x, y) in seen:
+            while (x, y) in seen or x is y:
                 x, y = choice(self._users_ids), choice(self._users_ids)
 
 

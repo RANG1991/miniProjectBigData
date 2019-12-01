@@ -23,7 +23,7 @@ class SocialGraph:
                 user = User(user_id, int(row[1]), int(row[2]), float(row[3]))
                 self._graph[user_id] = []
                 self._users_by_ids[user_id] = user
-                node_labels[user_id] = "{0:.2f}".format(user.get_prob())
+                node_labels[user_id] = "{0:.2f}\n{1}".format(user.get_prob(), user_id)
         for row in edges_reader:
             if row:
                 users_ids = tuple(row[1].split(":"))
@@ -34,9 +34,13 @@ class SocialGraph:
         g = nx.DiGraph(self._graph)
         pos = nx.spring_layout(g)
         plt.figure()
-        nx.draw_networkx_labels(g, pos, labels=node_labels)
-        nx.draw_networkx_edge_labels(g, pos, edge_labels=edge_labels, font_color='red')
-        nx.draw_networkx(g, arrows=True, node_size=500, with_labels=True)
+        nx.draw_networkx(g, pos=pos, with_labels=False)
+        shifted_pos = {k: [v[0], v[1] + .04] for k, v in pos.items()}
+        node_label_handles = nx.draw_networkx_labels(g, pos=shifted_pos,
+                                                     labels=node_labels)
+        [label.set_bbox(dict(facecolor='white', edgecolor='none')) for label in
+         node_label_handles.values()]
+        nx.draw_networkx_edge_labels(g, pos=pos, edge_labels=edge_labels)
         plt.show()
 
     def get_dict_graph(self):
