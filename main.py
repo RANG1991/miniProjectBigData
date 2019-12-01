@@ -18,6 +18,7 @@ def calc_probs_all_paths(all_paths, graph, MSP=0.5):
         else:
             print("can't find, the mult is:", mult, "the path is: ", path)
 
+
 def main():
     simulation = DataSetSimulation("vertices.csv", "edges.csv", "parameters.json")
     simulation.generate_vertices_file()

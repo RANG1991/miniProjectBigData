@@ -1,6 +1,6 @@
 {
   "users" : {
-    "number": 10,
+    "number": 3,
     "params": {
       "TF": {
         "min": 0,
@@ -19,7 +19,7 @@
     }
   },
   "connections": {
-    "number": 40,
+    "number": 3,
     "params": {
       "MF": {
         "min": 0,

@@ -11,6 +11,8 @@ class SocialGraph:
         self._graph = {}
         self._connections_by_ids = {}
         self._users_by_ids = {}
+        node_labels = {}
+        edge_labels = {}
         vertices_reader = csv.reader(open(vertices_file, "r"), delimiter=',', quotechar='"')
         next(vertices_reader, None)
         edges_reader = csv.reader(open(edges_file, "r"), delimiter=",", quotechar='"')
@@ -21,14 +23,20 @@ class SocialGraph:
                 user = User(user_id, int(row[1]), int(row[2]), float(row[3]))
                 self._graph[user_id] = []
                 self._users_by_ids[user_id] = user
+                node_labels[user_id] = "{0:.2f}".format(user.get_prob())
         for row in edges_reader:
             if row:
                 users_ids = tuple(row[1].split(":"))
                 connection = Connection(row[0], int(row[2]), int(row[3]), float(row[4]), float(row[5]), users_ids)
                 self._connections_by_ids[users_ids] = connection
                 self._graph[users_ids[0]].append(users_ids[1])
+                edge_labels[users_ids] = "{0:.2f}".format(connection.get_prob())
         g = nx.DiGraph(self._graph)
-        nx.draw_networkx(g, arrows=True)
+        pos = nx.spring_layout(g)
+        plt.figure()
+        nx.draw_networkx_labels(g, pos, labels=node_labels)
+        nx.draw_networkx_edge_labels(g, pos, edge_labels=edge_labels, font_color='red')
+        nx.draw_networkx(g, arrows=True, node_size=500, with_labels=True)
         plt.show()
 
     def get_dict_graph(self):
