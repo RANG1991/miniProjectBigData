@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 class SocialGraph:
 
-    def __init__(self, vertices_file, edges_file):
+    def __init__(self, vertices_file, edges_file, plot_graph=False):
         self._graph = {}
         self._connections_by_ids = {}
         self._users_by_ids = {}
@@ -31,17 +31,18 @@ class SocialGraph:
                 self._connections_by_ids[users_ids] = connection
                 self._graph[users_ids[0]].append(users_ids[1])
                 edge_labels[users_ids] = "{0:.2f}".format(connection.get_prob())
-        g = nx.DiGraph(self._graph)
-        pos = nx.spring_layout(g)
-        plt.figure()
-        nx.draw_networkx(g, pos=pos, with_labels=False)
-        shifted_pos = {k: [v[0], v[1] + .04] for k, v in pos.items()}
-        node_label_handles = nx.draw_networkx_labels(g, pos=shifted_pos,
-                                                     labels=node_labels)
-        [label.set_bbox(dict(facecolor='white', edgecolor='none')) for label in
-         node_label_handles.values()]
-        nx.draw_networkx_edge_labels(g, pos=pos, edge_labels=edge_labels)
-        plt.show()
+        if plot_graph:
+            g = nx.DiGraph(self._graph)
+            pos = nx.spring_layout(g)
+            plt.figure()
+            nx.draw_networkx(g, pos=pos, with_labels=False)
+            shifted_pos = {k: [v[0], v[1] + .04] for k, v in pos.items()}
+            node_label_handles = nx.draw_networkx_labels(g, pos=shifted_pos,
+                                                         labels=node_labels)
+            [label.set_bbox(dict(facecolor='white', edgecolor='none')) for label in
+             node_label_handles.values()]
+            nx.draw_networkx_edge_labels(g, pos=pos, edge_labels=edge_labels)
+            plt.show()
 
     def get_dict_graph(self):
         return self._graph
