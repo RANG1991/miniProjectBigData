@@ -3,9 +3,10 @@ from SocialGraph import SocialGraph
 from random import choice
 import matplotlib.pyplot as plt
 import numpy as np
+import networkx as nx
 
 
-def calc_probs_all_paths(all_paths, graph, MSP=0.5):
+def calc_probs_all_paths(all_paths, graph, edges_in_path, MSP=0.5):
     all_probs = {}
     number_of_found_paths = 0
     for path in all_paths:
@@ -17,6 +18,7 @@ def calc_probs_all_paths(all_paths, graph, MSP=0.5):
     for path in all_paths:
         mult = all_probs[tuple(path)]
         if mult >= MSP:
+            edges_in_path.extend([(path[i-1], path[i]) for i in range(1, len(path))])
             number_of_found_paths += 1
             print("the mult is: ", mult, "the path is: ", path)
         else:
@@ -24,23 +26,41 @@ def calc_probs_all_paths(all_paths, graph, MSP=0.5):
     return number_of_found_paths
 
 
+def draw_final_graph(graph, edges_in_paths):
+    g = nx.DiGraph(graph.get_dict_graph())
+    pos = nx.spring_layout(g)
+    colors_edges = ["r" if edge in edges_in_paths else "b" for edge in g.edges()]
+    plt.figure()
+    nx.draw_networkx(g, pos=pos, node_size=[5000] * len(g.nodes()), with_labels=False)
+    shifted_pos = {k: [v[0], v[1] + .04] for k, v in pos.items()}
+    node_label_handles = nx.draw_networkx_labels(g, pos=shifted_pos,
+                                                 labels=graph.get_node_labels())
+    [label.set_bbox(dict(facecolor='white', edgecolor='none')) for label in
+     node_label_handles.values()]
+    nx.draw_networkx_edge_labels(g, pos=pos, edge_labels=graph.get_edge_labels())
+    nx.draw_networkx_edges(g, pos, edge_color=colors_edges)
+    plt.show()
+
+
 def main():
     MSPs = np.linspace(0.1, 1, 10)
     MSPs_dict = {MSP: 0 for MSP in MSPs}
-    for i in range(100):
+    for i in range(1):
         for MSP in MSPs_dict.keys():
             simulation = DataSetSimulation("vertices.csv", "edges.csv", "parameters.json")
             simulation.generate_vertices_file()
             simulation.generate_edges_file()
             graph = SocialGraph("vertices.csv", "edges.csv")
+            edges_in_paths = []
             random_connection = choice(list(graph.get_connections().keys()))
             all_paths = graph.find_all_paths(random_connection[0], random_connection[1])
-            MSPs_dict[MSP] += calc_probs_all_paths(all_paths, graph, MSP=MSP)
+            MSPs_dict[MSP] += calc_probs_all_paths(all_paths, graph, edges_in_paths, MSP=MSP)
+            draw_final_graph(graph, edges_in_paths)
     sorted_MSPs_keys = [key for (key, value) in sorted(MSPs_dict.items())]
     sorted_MSPs_values = [value for (key, value) in sorted(MSPs_dict.items())]
     plt.plot(sorted_MSPs_keys, sorted_MSPs_values, 'bo')
     plt.xlabel('MSP values')
-    plt.ylabel('number of paths found in 100 runs')
+    plt.ylabel('number of paths found in 5 runs')
     plt.show()
 
 

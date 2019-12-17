@@ -1,18 +1,16 @@
 import csv
 from User import User
 from Connection import Connection
-import networkx as nx
-import matplotlib.pyplot as plt
 
 
 class SocialGraph:
 
-    def __init__(self, vertices_file, edges_file, plot_graph=False):
+    def __init__(self, vertices_file, edges_file):
         self._graph = {}
         self._connections_by_ids = {}
         self._users_by_ids = {}
-        node_labels = {}
-        edge_labels = {}
+        self._node_labels = {}
+        self._edge_labels = {}
         vertices_reader = csv.reader(open(vertices_file, "r"), delimiter=',', quotechar='"')
         next(vertices_reader, None)
         edges_reader = csv.reader(open(edges_file, "r"), delimiter=",", quotechar='"')
@@ -23,29 +21,24 @@ class SocialGraph:
                 user = User(user_id, int(row[1]), int(row[2]), float(row[3]))
                 self._graph[user_id] = []
                 self._users_by_ids[user_id] = user
-                node_labels[user_id] = "{0:.2f}\n{1}".format(user.get_prob(), user_id)
+                self._node_labels[user_id] = "{0:.2f}\n{1}".format(user.get_prob(), user_id)
         for row in edges_reader:
             if row:
                 users_ids = tuple(row[1].split(":"))
                 connection = Connection(row[0], int(row[2]), int(row[3]), float(row[4]), float(row[5]), users_ids)
                 self._connections_by_ids[users_ids] = connection
                 self._graph[users_ids[0]].append(users_ids[1])
-                edge_labels[users_ids] = "{0:.2f}".format(connection.get_prob())
-        if plot_graph:
-            g = nx.DiGraph(self._graph)
-            pos = nx.spring_layout(g)
-            plt.figure()
-            nx.draw_networkx(g, pos=pos, with_labels=False)
-            shifted_pos = {k: [v[0], v[1] + .04] for k, v in pos.items()}
-            node_label_handles = nx.draw_networkx_labels(g, pos=shifted_pos,
-                                                         labels=node_labels)
-            [label.set_bbox(dict(facecolor='white', edgecolor='none')) for label in
-             node_label_handles.values()]
-            nx.draw_networkx_edge_labels(g, pos=pos, edge_labels=edge_labels)
-            plt.show()
+                self._edge_labels[users_ids] = "{0:.2f}".format(connection.get_prob())
+
 
     def get_dict_graph(self):
         return self._graph
+
+    def get_node_labels(self):
+        return self._node_labels
+
+    def get_edge_labels(self):
+        return self._edge_labels
 
     def get_connections(self):
         return self._connections_by_ids
