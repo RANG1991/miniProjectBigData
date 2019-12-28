@@ -38,7 +38,7 @@ def draw_final_graph(graph, edges_in_paths, ego_node, target_node):
     [label.set_bbox(dict(facecolor='white', edgecolor='none')) for label in
      node_label_handles.values()]
     nx.draw_networkx_nodes(g, pos, node_color=colors_nodes, node_size=3000)
-    nx.draw_networkx_edges(g, pos, edge_color=colors_edges, arrowsize=20, arrowstyle='->')
+    nx.draw_networkx_edges(g, pos, edge_color=colors_edges, arrowsize=20, arrowstyle='->', node_size=5000)
     nx.draw_networkx_edge_labels(g, pos=pos, edge_labels=graph.get_edge_labels())
     plt.show()
 
