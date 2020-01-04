@@ -11,6 +11,7 @@ class DataSetSimulation:
         with open(params_file) as f:
             self._paramsJson = json.load(f)
         self._users_ids = []
+        self._user_id_to_tf = {}
 
     def generate_vertices_file(self):
         csv_file_vertices = open(self._output_filename_vertices, 'w')
@@ -27,6 +28,7 @@ class DataSetSimulation:
             aua_to_write = randrange(AUA["min"], AUA["max"], AUA["step"])
             ffr_to_write = uniform(FFR["min"], FFR["max"])
             self._users_ids.append(id_to_write)
+            self._user_id_to_tf[id_to_write] = tf_to_write
             vertices_file_writer.writerow([id_to_write, tf_to_write, aua_to_write, ffr_to_write])
         csv_file_vertices.close()
 
@@ -42,13 +44,13 @@ class DataSetSimulation:
         OIR = params["OIR"]
         connections_generator = self.get_rand_connections()
         for i in range(number_of_connections):
+            edge_to_write = next(connections_generator)
+            edge_to_write = edge_to_write[0] + ":" + edge_to_write[1]
             id_to_write = uuid.uuid4().hex[:8]
-            mf_to_write = randrange(MF["min"], MF["max"], MF["step"])
+            mf_to_write = randrange(MF["min"], min(self._user_id_to_tf[edge_to_write[0]], self._user_id_to_tf[edge_to_write[1]]), MF["step"])
             fd_to_write = randrange(FD["min"], FD["max"], FD["step"])
             p_ra_to_write = uniform(P_RA["min"], P_RA["max"])
             oir_to_write = uniform(OIR["min"], OIR["max"])
-            edge_to_write = next(connections_generator)
-            edge_to_write = edge_to_write[0] + ":" + edge_to_write[1]
             vertices_file_writer.writerow([id_to_write, edge_to_write, mf_to_write, fd_to_write, oir_to_write, p_ra_to_write])
         csv_file_edges.close()
 
