@@ -20,9 +20,10 @@ def calc_probs_all_paths(all_paths, graph, edges_in_path, MSP=0.5):
         if mult >= MSP:
             edges_in_path.extend([(path[i-1], path[i]) for i in range(1, len(path))])
             number_of_found_paths += 1
-            print("the mult is: ", mult, "the path is: ", path)
+            # print("the mult is: ", mult, "the path is: ", path)
         else:
-            print("can't find, the mult is:", mult, "the path is: ", path)
+            pass
+            # print("can't find, the mult is:", mult, "the path is: ", path)
     return number_of_found_paths
 
 
@@ -46,7 +47,7 @@ def draw_final_graph(graph, edges_in_paths, ego_node, target_node):
 def main():
     MSPs = np.linspace(0.1, 1, 10)
     MSPs_dict = {MSP: 0 for MSP in MSPs}
-    for i in range(1):
+    for i in range(100):
         for MSP in MSPs_dict.keys():
             simulation = DataSetSimulation("vertices.csv", "edges.csv", "parameters.json")
             simulation.generate_vertices_file()
@@ -56,7 +57,7 @@ def main():
             random_connection = choice(list(graph.get_connections().keys()))
             all_paths = graph.find_all_paths(random_connection[0], random_connection[1])
             MSPs_dict[MSP] += calc_probs_all_paths(all_paths, graph, edges_in_paths, MSP=MSP)
-            draw_final_graph(graph, edges_in_paths, random_connection[0], random_connection[1])
+            # draw_final_graph(graph, edges_in_paths, random_connection[0], random_connection[1])
     sorted_MSPs_keys = [key for (key, value) in sorted(MSPs_dict.items())]
     sorted_MSPs_values = [value for (key, value) in sorted(MSPs_dict.items())]
     plt.plot(sorted_MSPs_keys, sorted_MSPs_values, 'bo')

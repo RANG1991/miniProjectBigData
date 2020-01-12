@@ -46,7 +46,10 @@ class DataSetSimulation:
         for i in range(number_of_connections):
             edge_to_write = next(connections_generator)
             id_to_write = uuid.uuid4().hex[:8]
-            mf_to_write = randrange(MF["min"], min(self._user_id_to_tf[edge_to_write[0]], self._user_id_to_tf[edge_to_write[1]]), MF["step"])
+            if min(self._user_id_to_tf[edge_to_write[0]], self._user_id_to_tf[edge_to_write[1]]) == 0:
+                mf_to_write = 0
+            else:
+                mf_to_write = randrange(MF["min"], min(self._user_id_to_tf[edge_to_write[0]], self._user_id_to_tf[edge_to_write[1]]), MF["step"])
             fd_to_write = randrange(FD["min"], FD["max"], FD["step"])
             p_ra_to_write = uniform(P_RA["min"], P_RA["max"])
             oir_to_write = uniform(OIR["min"], OIR["max"])
